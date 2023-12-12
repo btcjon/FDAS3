@@ -200,13 +200,13 @@ template.main.append(positions_all_grouped)
 # Create a stop event
 stop_event = threading.Event()
 
-def update_table():
+async def update_table():
     while not stop_event.is_set():
         print("Fetching new data from the database...")
-        # This section will be replaced with the code to fetch and update 'positions' data from MetaApi
+        await fetch_and_update_positions()
 
         # Wait for a certain period of time or until the stop event is set
-        stop_event.wait(60)
+        await asyncio.sleep(60)
 
 # Function to serve the template
 def serve_template():
@@ -217,16 +217,13 @@ serve_thread = threading.Thread(target=serve_template)
 serve_thread.start()
 
 try:
-    # Start a new thread that runs the update_table function
-    update_thread = threading.Thread(target=update_table)
-    update_thread.start()
-
-    # Keep the main thread running
-    while True:
-        time.sleep(1)
+    # Run the asyncio event loop
+    loop = asyncio.get_event_loop()
+    loop.create_task(update_table())
+    loop.run_forever()
 except KeyboardInterrupt:
     # Stop the updates when Ctrl+C is pressed
     stop_event.set()
-    # Join the threads to ensure they have stopped before exiting
-    update_thread.join()
+    loop.stop()
+    loop.close()
     serve_thread.join()
