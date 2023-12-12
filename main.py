@@ -98,7 +98,7 @@ df2 = pd.DataFrame()
 # positions_summary - 1st table
 positions_summary = pn.widgets.Tabulator(df1, page_size=40, layout='fit_columns',
                                          hidden_columns=['index', 'magic', 'comment', 'profit', 'realizedProfit', 'unrealizedSwap', 'realizedSwap'],
-                                         sorters=[{'column': 'volume', 'dir': 'desc'}],
+                                         sorters=[{'field': 'volume', 'dir': 'desc'}],
                                          sizing_mode='stretch_both',
                                          stylesheets=['assets/mystyle.css'],
                                          text_align='center')
