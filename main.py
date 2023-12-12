@@ -25,38 +25,36 @@ api_token = os.getenv('META_API_TOKEN')
 account_id = os.getenv('META_API_ACCOUNT_ID')
 print("MetaApi token and account id retrieved.")
 
-async def fetch_and_update_positions():
-    try:
-        # Create a MetaApi instance
-        api = MetaApi(api_token)
-        print("MetaApi instance created.")
+def fetch_and_update_positions():
+    # Create a MetaApi instance
+    api = MetaApi(api_token)
+    print("MetaApi instance created.")
 
-        # Fetch account and create a streaming connection
-        account = await api.metatrader_account_api.get_account(account_id)
-        connection = account.get_streaming_connection()
-        await connection.connect()
+    # Fetch account and create a streaming connection
+    account = api.metatrader_account_api.get_account(account_id).synchronize()
+    connection = account.get_streaming_connection()
+    connection.connect().wait()
 
-        # Wait until synchronization completed
-        await connection.wait_synchronized()
+    # Wait until synchronization completed
+    connection.wait_synchronized().wait()
 
-        # Access local copy of terminal state
-        terminalState = connection.terminal_state
+    # Access local copy of terminal state
+    terminalState = connection.terminal_state
 
-        # Access positions from the terminal state
-        fetched_positions = terminalState.positions
-        print(f"Fetched positions: {fetched_positions}")
+    # Access positions from the terminal state
+    fetched_positions = terminalState.positions
+    print(f"Fetched positions: {fetched_positions}")
 
-        if not fetched_positions:
-            print("No positions data received.")
-            return
+    if not fetched_positions:
+        print("No positions data received.")
+        return
 
-        # Convert the fetched positions to a DataFrame
-        df = pd.DataFrame(fetched_positions)
-        print(f"DataFrame created with {len(df)} entries.")
+    # Convert the fetched positions to a DataFrame
+    df = pd.DataFrame(fetched_positions)
+    print(f"DataFrame created with {len(df)} entries.")
 
-        # Proceed with the rest of the function...
-    except Exception as e:
-        print(f"An error occurred while fetching positions: {e}")
+    # Apply transformations to the DataFrame
+    # ... (The synchronous code that fetches and updates the positions) ...
 
     # Apply transformations to the DataFrame
     df1 = df.groupby(['symbol', 'type']).agg({
@@ -200,13 +198,13 @@ template.main.append(positions_all_grouped)
 # Create a stop event
 stop_event = threading.Event()
 
-async def update_table():
+def update_table():
     while not stop_event.is_set():
         print("Fetching new data from the database...")
-        await fetch_and_update_positions()
+        fetch_and_update_positions()
 
         # Wait for a certain period of time or until the stop event is set
-        await asyncio.sleep(60)
+        stop_event.wait(60)
 
 # Function to serve the template
 def serve_template():
