@@ -193,39 +193,7 @@ stop_event = threading.Event()
 def update_table():
     while not stop_event.is_set():
         print("Fetching new data from the database...")
-        # Fetch new data from the database
-        df = pd.DataFrame(list(collection.find()))
-        df['_id'] = df['_id'].astype(str)  # Convert ObjectId instances to strings
-
-        # Apply the same transformations as were applied to the original DataFrame
-        df1 = df.groupby(['symbol', 'type']).agg({
-            'volume': 'sum',
-            'unrealizedProfit': 'sum',
-            'swap': 'sum',
-            'openPrice': lambda x: (x * df.loc[x.index, 'volume']).sum() / df.loc[x.index, 'volume'].sum(),
-            'time': 'min',
-            'magic': lambda x: ', '.join(f"{v}-{k}" for k, v in x.value_counts().items()),
-            'comment': lambda x: ', '.join(f"{v}-{k}" for k, v in x.value_counts().items()),
-            'profit': 'sum',
-            'realizedProfit': 'sum',
-            'unrealizedSwap': 'sum',
-            'realizedSwap': 'sum',
-        }).reset_index()
-
-        df1['time'] = pd.to_datetime(df1['time'])
-        df1['Days'] = (datetime.now() - df1['time']).dt.days
-        df1 = df1.drop(columns=['time'])
-        idx = df1.columns.get_loc('openPrice') + 1
-        df1.insert(idx, 'Days', df1.pop('Days'))
-        df1 = df1.rename(columns={'unrealizedProfit': 'uProfit', 'openPrice': 'BE'})
-        df1['type'] = df1['type'].replace({'POSITION_TYPE_BUY': 'BUY', 'POSITION_TYPE_SELL': 'SELL'})
-        # Convert 'uProfit' and 'swap' to integer
-        df1['uProfit'] = df1['uProfit'].astype(int)
-        df1['swap'] = df1['swap'].astype(int)
-
-        # Update the tables completely
-        positions_summary.value = df1
-        positions_all_grouped.value = df[['symbol', 'type', 'volume', 'profit', 'swap', 'openPrice', 'time', 'comment', 'magic']]
+        # This section will be replaced with the code to fetch and update 'positions' data from MetaApi
 
         # Wait for a certain period of time or until the stop event is set
         stop_event.wait(60)
