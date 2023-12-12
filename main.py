@@ -87,9 +87,6 @@ async def fetch_and_update_positions():
     positions_summary.value = df1
     positions_all_grouped.value = df[['symbol', 'type', 'volume', 'profit', 'swap', 'openPrice', 'time', 'comment', 'magic']]
 
-# Fetch and update positions
-# This is now an empty placeholder to ensure we don't run the function immediately
-# The actual call to fetch_and_update_positions will be handled within the update_table function
 
 # Initialize empty DataFrames for the Panel tables
 df1 = pd.DataFrame()
@@ -98,7 +95,7 @@ df2 = pd.DataFrame()
 # positions_summary - 1st table
 positions_summary = pn.widgets.Tabulator(df1, page_size=40, layout='fit_columns',
                                          hidden_columns=['index', 'magic', 'comment', 'profit', 'realizedProfit', 'unrealizedSwap', 'realizedSwap'],
-                                         sorters=[{'field': 'volume', 'dir': 'desc'}],
+                                         sorters=[{'column': 'volume', 'dir': 'desc'}],
                                          sizing_mode='stretch_both',
                                          stylesheets=['assets/mystyle.css'],
                                          text_align='center')
@@ -108,7 +105,7 @@ positions_all_grouped = pn.widgets.Tabulator(df2, groupby=['symbol', 'type'])
 
 # Create a FastGridTemplate with dark theme
 template = FastListTemplate(
-    title='thetradingbot',
+    title='',
     theme='dark',
     theme_toggle=True,
     collapsed_sidebar=True,
