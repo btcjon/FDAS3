@@ -6,6 +6,7 @@ import panel as pn
 import threading
 from panel.template import FastListTemplate
 from datetime import datetime
+import pytz
 from panel.widgets import Checkbox
 import time
 from metaapi_cloud_sdk import MetaApi
@@ -43,7 +44,7 @@ async def fetch_and_update_positions():
 
     # Access positions from the terminal state
     fetched_positions = terminalState.positions
-    print(f"Fetched positions: {fetched_positions}")
+    # print(f"Fetched positions: {fetched_positions}")
 
     if not fetched_positions:
         print("No positions data received.")
@@ -51,7 +52,7 @@ async def fetch_and_update_positions():
 
     # Convert the fetched positions to a DataFrame
     df = pd.DataFrame(fetched_positions)
-    print(f"DataFrame created with {len(df)} entries.")
+    # print(f"DataFrame created with {len(df)} entries.")
 
     # Apply transformations to the DataFrame
     # ... (The synchronous code that fetches and updates the positions) ...
@@ -72,7 +73,7 @@ async def fetch_and_update_positions():
     }).reset_index()
 
     df1['time'] = pd.to_datetime(df1['time'])
-    df1['Days'] = (datetime.now() - df1['time']).dt.days
+    df1['Days'] = (datetime.now(pytz.utc) - df1['time']).dt.days
     df1 = df1.drop(columns=['time'])
     idx = df1.columns.get_loc('openPrice') + 1
     df1.insert(idx, 'Days', df1.pop('Days'))
@@ -200,7 +201,7 @@ stop_event = threading.Event()
 
 def update_table():
     while not stop_event.is_set():
-        print("Fetching new data from the database...")
+        # print("Fetching new data from the database...")
         asyncio.run(fetch_and_update_positions())
 
         # Wait for a certain period of time or until the stop event is set
