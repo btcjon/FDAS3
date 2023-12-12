@@ -25,18 +25,18 @@ api_token = os.getenv('META_API_TOKEN')
 account_id = os.getenv('META_API_ACCOUNT_ID')
 print("MetaApi token and account id retrieved.")
 
-def fetch_and_update_positions():
+async def fetch_and_update_positions():
     # Create a MetaApi instance
     api = MetaApi(api_token)
     print("MetaApi instance created.")
 
     # Fetch account and create a streaming connection
-    account = api.metatrader_account_api.get_account(account_id).synchronize()
+    account = await api.metatrader_account_api.get_account(account_id)
     connection = account.get_streaming_connection()
-    connection.connect().wait()
+    await connection.connect()
 
     # Wait until synchronization completed
-    connection.wait_synchronized().wait()
+    await connection.wait_synchronized()
 
     # Access local copy of terminal state
     terminalState = connection.terminal_state
@@ -201,7 +201,7 @@ stop_event = threading.Event()
 def update_table():
     while not stop_event.is_set():
         print("Fetching new data from the database...")
-        fetch_and_update_positions()
+        asyncio.run(fetch_and_update_positions())
 
         # Wait for a certain period of time or until the stop event is set
         stop_event.wait(60)
