@@ -26,27 +26,37 @@ account_id = os.getenv('META_API_ACCOUNT_ID')
 print("MetaApi token and account id retrieved.")
 
 async def fetch_and_update_positions():
-    # Create a MetaApi instance
-    api = MetaApi(api_token)
-    print("MetaApi instance created.")
+    try:
+        # Create a MetaApi instance
+        api = MetaApi(api_token)
+        print("MetaApi instance created.")
 
-    # Fetch account and create a streaming connection
-    account = await api.metatrader_account_api.get_account(account_id)
-    connection = account.get_streaming_connection()
-    await connection.connect()
+        # Fetch account and create a streaming connection
+        account = await api.metatrader_account_api.get_account(account_id)
+        connection = account.get_streaming_connection()
+        await connection.connect()
 
-    # Wait until synchronization completed
-    await connection.wait_synchronized()
+        # Wait until synchronization completed
+        await connection.wait_synchronized()
 
-    # Access local copy of terminal state
-    terminalState = connection.terminal_state
+        # Access local copy of terminal state
+        terminalState = connection.terminal_state
 
-    # Access positions from the terminal state
-    fetched_positions = terminalState.positions
-    print("Account and positions fetched.")
+        # Access positions from the terminal state
+        fetched_positions = terminalState.positions
+        print(f"Fetched positions: {fetched_positions}")
 
-    # Convert the fetched positions to a DataFrame
-    df = pd.DataFrame(fetched_positions)
+        if not fetched_positions:
+            print("No positions data received.")
+            return
+
+        # Convert the fetched positions to a DataFrame
+        df = pd.DataFrame(fetched_positions)
+        print(f"DataFrame created with {len(df)} entries.")
+
+        # Proceed with the rest of the function...
+    except Exception as e:
+        print(f"An error occurred while fetching positions: {e}")
 
     # Apply transformations to the DataFrame
     df1 = df.groupby(['symbol', 'type']).agg({
