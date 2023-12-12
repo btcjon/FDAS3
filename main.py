@@ -50,8 +50,9 @@ async def fetch_and_update_positions():
         print("No positions data received.")
         return
 
-    # Convert the fetched positions to a DataFrame
+    # Convert the fetched positions to a DataFrame and log the number of records fetched
     df = pd.DataFrame(fetched_positions)
+    print(f"Fetched {len(df)} records.")
     # print(f"DataFrame created with {len(df)} entries.")
 
     # Apply transformations to the DataFrame
@@ -83,9 +84,10 @@ async def fetch_and_update_positions():
     df1['uProfit'] = df1['uProfit'].astype(int)
     df1['swap'] = df1['swap'].astype(int)
 
-    # Update the tables completely
+    # Update the tables completely and log the update
     positions_summary.value = df1
     positions_all_grouped.value = df[['symbol', 'type', 'volume', 'profit', 'swap', 'openPrice', 'time', 'comment', 'magic']]
+    print("Tables updated.")
 
 
 # Initialize empty DataFrames for the Panel tables
@@ -198,7 +200,7 @@ stop_event = threading.Event()
 
 def update_table():
     while not stop_event.is_set():
-        # print("Fetching new data from the database...")
+        print("Fetching new data...")
         asyncio.run(fetch_and_update_positions())
 
         # Wait for a certain period of time or until the stop event is set
