@@ -212,16 +212,21 @@ async def update_table():
 def serve_template():
     pn.serve(template, static_dirs={'assets': './assets'})
 
-async def start_server_after_data_ready():
-    await fetch_and_update_positions()  # Fetch initial data before starting the server
-    serve_template()  # Start the server
+# Start a new thread that runs the serve_template function
+serve_thread = threading.Thread(target=serve_template)
+serve_thread.start()
 
 try:
-    # Run the asyncio event loop
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(start_server_after_data_ready())
+    # Start a new thread that runs the update_table function
+    update_thread = threading.Thread(target=update_table)
+    update_thread.start()
+
+    # Keep the main thread running
+    while True:
+        time.sleep(1)
 except KeyboardInterrupt:
     # Stop the updates when Ctrl+C is pressed
     stop_event.set()
-    loop.stop()
-    loop.close()
+    # Join the threads to ensure they have stopped before exiting
+    update_thread.join()
+    serve_thread.join()
