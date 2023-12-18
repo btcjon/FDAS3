@@ -3,3 +3,4 @@
 .aider*
 .web
 __pycache__/
+*.metaapi
