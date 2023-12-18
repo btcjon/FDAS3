@@ -47,6 +47,7 @@
             url: '/get_data/',  // URL of the Django view
             method: 'GET',
             success: function(data) {
+                console.log(data); // Log the response data to the console
                 var tableBody = $('#positions tbody');
                 $.each(data, function(i, position) {
                     var row = $('<tr>');
