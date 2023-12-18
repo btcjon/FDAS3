@@ -50,10 +50,9 @@
                 var tableBody = $('#positions tbody');
                 $.each(data, function(i, position) {
                     var row = $('<tr>');
-                    row.append($('<td>').text(position.id));
-                    row.append($('<td>').text(position.type));
-                    row.append($('<td>').text(position.platform));
-                    // Append other cells here
+                    $.each(position, function(key, value) {
+                        row.append($('<td>').text(value));
+                    });
                     tableBody.append(row);
                 });
             }
