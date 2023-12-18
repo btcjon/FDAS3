@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Positions</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Positions</h1>
+    <div id="positions"></div>
+
+    <script>
+    $(document).ready(function() {
+        $.ajax({
+            url: '/get_data/',  // URL of the Django view
+            method: 'GET',
+            success: function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    $('#positions').append('<p>ID: ' + data[i].id + ', Type: ' + data[i].type + ', Platform: ' + data[i].platform + ', Symbol: ' + data[i].symbol + ', Magic: ' + data[i].magic + ', Time: ' + data[i].time + ', Broker Time: ' + data[i].brokerTime + ', Update Time: ' + data[i].updateTime + ', Open Price: ' + data[i].openPrice + ', Volume: ' + data[i].volume + ', Swap: ' + data[i].swap + ', Realized Swap: ' + data[i].realizedSwap + ', Unrealized Swap: ' + data[i].unrealizedSwap + ', Commission: ' + data[i].commission + ', Realized Commission: ' + data[i].realizedCommission + ', Unrealized Commission: ' + data[i].unrealizedCommission + ', Realized Profit: ' + data[i].realizedProfit + ', Reason: ' + data[i].reason + ', Account Currency Exchange Rate: ' + data[i].accountCurrencyExchangeRate + ', Broker Comment: ' + data[i].brokerComment + ', Current Price: ' + data[i].currentPrice + ', Current Tick Value: ' + data[i].currentTickValue + ', Unrealized Profit: ' + data[i].unrealizedProfit + ', Profit: ' + data[i].profit + ', Comment: ' + data[i].comment + ', Update Sequence Number: ' + data[i].updateSequenceNumber + '</p>');
+                }
+            }
+        });
+    });
+    </script>
+</body>
+</html>

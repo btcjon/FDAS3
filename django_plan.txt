@@ -1,0 +1,35 @@
+1. DONE: Setup Django Project: Start by setting up a new Django project. You can do this by installing Django using pip and then running django-admin startproject myproject.
+
+2. DONE: Create Django App: Inside your Django project, create a new Django app. This can be done by running python manage.py startapp myapp.
+
+3. DONE: Setup Django Channels: Django Channels extends Django to handle WebSockets, HTTP2, and other protocols. Install Django Channels and set it up following the official documentation.
+
+4. DONE: Setup Environment Variables: Create a .env file in your project directory and add your MetaApi API token and account id as environment variables. You can use the python-decouple library to load these variables in your Django settings.
+
+5. DONE: Setup SQLite Database: Create a SQLite database named 'positions.db' and a table to store the positions data. You can use the sqlite3 module in Python for this.
+
+6. DONE: Fetch and Store Data: Fetch the 'positions' data from MetaApi and store it in the SQLite database. You can do this using the MetaApi Python SDK. Make sure to update the database regularly to keep the data up-to-date. DONE. stored in positions.db
+
+7. DONE: Create Django Models: Create Django models that correspond to the structure of your SQLite database. This will allow Django to interact with the database.
+
+8. DONE: Create WebSocket Consumer: Create a WebSocket consumer in Django Channels. This consumer will fetch data from the SQLite database and send updates to the client when new data is available.
+
+9. DONE: Setup Frontend: Create a basic HTML template for your frontend. This template should include a header area, a sidebar area, and a main area. In the main area, create a table to display the 'positions' data.
+
+10. DONE: Connect to WebSocket: In your frontend, use JavaScript to establish a WebSocket connection to your Django server.
+
+11. DONE: Update Table with Real-Time Data: When you receive a message over the WebSocket connection, update the table in your frontend with the new data. This can be done using JavaScript or a JavaScript library like jQuery.
+
+12. Run and Test Your Application: Finally, run your Django server and open your application in a web browser. You should see the 'positions' data in the table, and the table should update in real-time as new data is available.
+
+PLAN for Testing - Use Ajax Polling
+
+1. Create a Django View to Serve Data: In your Django views file (views.py), create a new view that returns the data you want to display in the table. This data should be serialized into JSON format. Django provides a JsonResponse object that makes this easy.
+
+2. Add a URL for the New View: In your Django URLs file (urls.py), add a new URL pattern for the get_data view.
+
+3. Fetch the Data from the Front-End: On the front-end, you can use jQuery to periodically send an AJAX request to the get_data endpoint and update the table with the received data.
+
+4. Run and Test Your Application: Finally, run your Django server and open your application in a web browser. You should see the 'positions' data in the table, and the table should update every 5 seconds without needing to refresh the page.
+
+Remember to replace YourModel with the name of your Django model, #myTable with the ID of your table, and field1 and field2 with the names of the fields you want to display in the table.
